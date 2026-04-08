@@ -1,0 +1,61 @@
+.DS_Store
+Thumbs.db
+
+# Editors and local workspace settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Node.js and workspace dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs and caches
+dist/
+build/
+coverage/
+.cache/
+.turbo/
+.vite/
+vite.config.ts.timestamp-*
+*.tsbuildinfo
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Runtime data
+tmp/
+temp/
+
+# Prisma and local databases
+prisma/dev.db*
+*.sqlite
+*.sqlite3
+
+# Infrastructure overrides
+.docker/
+docker-compose.override.yml
+
+# PWA generated files
+dev-dist/
+sw.js
+workbox-*.js
+
+# Bruno local environments and secrets
+bruno/environments/
+*.bru.local
