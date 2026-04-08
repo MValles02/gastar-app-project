@@ -1,0 +1,10 @@
+dist
+node_modules
+coverage
+.vite
+.pnpm-store
+.opencode
+docs
+openspec
+README.md
+pnpm-lock.yaml
