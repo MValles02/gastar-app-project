@@ -1,20 +1,59 @@
 schema: spec-driven
+context: |
+  Gastar App is a documentation-driven MVP for a small private group of users tracking personal finances.
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+  Product constraints:
+  - The MVP is narrow and intentional. Avoid scope creep.
+  - Prioritize fast manual entry with a mobile-first web experience.
+  - The UI is Spanish-only. Code, docs, specs, and implementation notes stay in English.
+  - The app is an installable PWA with offline read-only support only.
+  - Out of MVP by default: budgeting, shared spaces, bank sync, CSV import/export, automatic exchange rates, audit history, deleted-item recovery, offline write/sync, investments, and statement-centric card accounting.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Finance constraints:
+  - Every finance entity is strictly user-owned. No shared data model.
+  - Financial meaning uses a date-only model in the America/Argentina/Buenos_Aires timezone.
+  - Supported currencies are exactly ARS and USD.
+  - Preserve the money values the user entered. Do not collapse mixed currencies into a synthetic total.
+  - Cross-currency behavior is explicit and user-entered, not automatic.
+  - Credit cards are the currency exception: one card concept may expose optional ARS and USD balance buckets.
+  - Installments follow a purchase-centric model, not a statement-centric model.
+
+  Platform constraints:
+  - Planned repo structure is a TypeScript monorepo with apps/api, apps/web, packages/shared, infra, docs, openspec, and bruno.
+  - apps/api is the source of truth for backend logic and data access.
+  - apps/web owns UI, PWA behavior, and API consumption.
+  - packages/shared should contain only code truly shared by web and api.
+  - API contracts use a versioned /api/v1 base path with predictable success/error envelopes and shared Zod validation.
+  - Recurring transaction execution is in-process in the api service for MVP; do not assume a queue or worker service.
+
+  Workflow constraints:
+  - Use OpenSpec to plan coherent changes before implementation.
+  - Keep durable long-term rules in docs/ and active work artifacts in openspec/changes/.
+  - Proposals, designs, and tasks must align with the durable docs rather than redefining them.
+  - Changes should stay small, reviewable, and scoped to one concern.
+  - Git follows Conventional Commits and PR-based collaboration.
+  - Regular work branches come from develop. Hotfix branches come from main.
+
+rules:
+  proposal:
+    - Keep the proposal tightly scoped to one coherent change.
+    - State the user or product problem clearly before describing the solution.
+    - Explicitly mention if the change is in MVP scope, out of scope, or requires product confirmation.
+    - Include non-goals whenever they help prevent scope creep.
+    - Do not restate durable project rules that already live in docs unless the proposal is changing them.
+    - If the change would alter long-term project behavior, call out which durable docs will need updates.
+
+  design:
+    - Use the design to explain how the change fits the documented finance, platform, and product rules.
+    - Resolve ambiguities instead of pushing unclear decisions into implementation tasks.
+    - Respect repo boundaries: keep api, web, and shared responsibilities explicit.
+    - Avoid premature infrastructure or abstraction. MVP simplicity is the default.
+    - If the design conflicts with existing durable docs, state the conflict explicitly instead of silently overriding it.
+
+  tasks:
+    - Break tasks into small, sequential, implementation-ready steps.
+    - Tasks should describe real execution order, not broad themes.
+    - Include durable doc updates when the change affects long-term rules or architecture.
+    - Include relevant validation steps when code work is involved.
+    - Keep each task scoped to one concern and avoid bundling unrelated refactors.
+    - Do not include out-of-MVP work unless the proposal explicitly expands scope.
