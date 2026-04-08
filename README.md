@@ -4,7 +4,7 @@ Gastar App is a mobile-first personal finance tracker for a small private group 
 
 ## Status
 
-This repository is currently documentation-first. The product, architecture, and operating rules are defined in [docs](./docs/) and [openspec](./openspec/); the application packages described below are the intended monorepo structure for implementation.
+This repository now includes the documented monorepo bootstrap for `apps/web`, `apps/api`, `packages/shared`, `infra`, and `bruno` alongside the durable docs and OpenSpec artifacts. The current codebase is intentionally thin, but it already supports root-level install, lint, format-check, typecheck, build, Docker packaging, and deployment workflow automation.
 
 ## MVP Highlights
 
@@ -15,7 +15,7 @@ This repository is currently documentation-first. The product, architecture, and
 - Mobile-first Spanish UI
 - Installable PWA with offline read-only behavior for previously fetched data
 
-## Planned Stack
+## Stack
 
 - Monorepo with `pnpm` workspaces
 - `apps/web`: React, Vite, TypeScript, Tailwind CSS, `shadcn/ui`
@@ -24,7 +24,7 @@ This repository is currently documentation-first. The product, architecture, and
 - `infra`: Docker and deployment configuration
 - `bruno`: API collections for manual testing
 
-## Planned Repository Structure
+## Repository Structure
 
 ```text
 / 
@@ -52,6 +52,16 @@ This repository is currently documentation-first. The product, architecture, and
 - Environments and config: [docs/operations/environments-and-config.md](./docs/operations/environments-and-config.md)
 - Git and collaboration: [docs/operations/git-and-collaboration.md](./docs/operations/git-and-collaboration.md)
 - CI/CD and deployment: [docs/operations/ci-cd-and-deployment.md](./docs/operations/ci-cd-and-deployment.md)
+
+## Workspace Commands
+
+- `pnpm install`
+- `pnpm lint`
+- `pnpm format:check`
+- `pnpm typecheck`
+- `pnpm build`
+- `pnpm db:up`
+- `pnpm db:down`
 
 ## Product Direction
 

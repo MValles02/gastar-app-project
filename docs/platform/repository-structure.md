@@ -31,6 +31,7 @@ The backend application.
 - **Stack**: Node.js, Express, TypeScript, Prisma, PostgreSQL.
 - **Role**: Source of truth for business logic, database access, session management, and Google OAuth verification.
 - **Dependencies**: May depend on `packages/shared`. Must not depend on `apps/web`.
+- **Bootstrap Contract**: Includes Prisma configuration, tracked migrations, and the production entrypoint that runs `prisma migrate deploy` before the API starts serving traffic.
 
 ## `apps/web/`
 
@@ -40,6 +41,7 @@ The frontend application.
 - **Role**: User interface, PWA behavior, state management, and API consumption.
 - **Dependencies**: May depend on `packages/shared`. Must not depend on `apps/api`.
 - **Note on UI Components**: Keep all UI components, including `shadcn/ui` elements, directly inside `apps/web`. Do not create a separate `packages/ui` library for the MVP.
+- **Bootstrap Contract**: Includes Tailwind configuration, a `components.json` baseline compatible with `shadcn/ui`, and a production Docker image served through Nginx.
 
 ## `packages/shared/`
 
@@ -53,7 +55,7 @@ Shared TypeScript code.
 
 Infrastructure definition.
 
-- **Role**: Contains `docker-compose.yaml` for local database setup and any future deployment definition scripts required outside of Dokploy.
+- **Role**: Contains `docker-compose.yml` for local PostgreSQL and bootstrap container setup plus any future deployment definition scripts required outside of Dokploy.
 
 ## `bruno/`
 
@@ -73,3 +75,4 @@ Documentation boundaries.
 - **Linting & Formatting**: ESLint and Prettier are configured at the root to enforce consistent style across all apps and packages.
 - **Dependencies**: Keep shared devDependencies (like TypeScript, ESLint plugins, Prettier) at the workspace root to avoid version mismatches.
 - **Build Order**: If `apps/api` or `apps/web` depend on `packages/shared`, ensure `shared` builds first if it requires a build step. (Often, simple TypeScript packages can be imported directly via workspace aliases without a separate build step if configured correctly).
+- **Root Validation Contract**: The workspace root owns `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, and `pnpm build`, and CI uses those commands as the required merge gate.
