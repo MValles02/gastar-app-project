@@ -1,0 +1,1 @@
+-- Bootstrap migration to establish the deploy-time Prisma workflow.

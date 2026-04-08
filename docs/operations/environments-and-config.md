@@ -47,6 +47,7 @@ Configuration must support the correct allowed origins and redirect behavior for
 - Public API base URL
 - Current application environment
 - Google OAuth client identifier appropriate for that environment
+- Repository examples: `.env.web.local.example`, `.env.web.development.example`, `.env.web.production.example`
 
 ### API Configuration
 - Server port and current application environment
@@ -55,10 +56,22 @@ Configuration must support the correct allowed origins and redirect behavior for
 - Google OAuth client configuration for token verification
 - Access token and refresh token signing secrets
 - Cookie security behavior suitable for the environment
+- Repository examples: `.env.api.local.example`, `.env.api.development.example`, `.env.api.production.example`
 
 ### Google OAuth Setup
 - Local client for local development
 - Development client for `dev-app.gastar.app`
 - Production client for `app.gastar.app`
+
+## Automation Inputs
+
+The repository keeps runtime secrets outside version control and documents them through example files, GitHub variables, and GitHub secrets.
+
+Current GitHub Actions inputs:
+
+- Development web build variables: `WEB_DEVELOPMENT_API_BASE_URL`, `WEB_DEVELOPMENT_GOOGLE_CLIENT_ID`
+- Production web build variables: `WEB_PRODUCTION_API_BASE_URL`, `WEB_PRODUCTION_GOOGLE_CLIENT_ID`
+- Development deployment secret: `DOKPLOY_DEVELOPMENT_WEBHOOK_URL`
+- Production deployment secret: `DOKPLOY_PRODUCTION_WEBHOOK_URL`
 
 For deployment pipeline and workflow rules mapping these environments, see [CI/CD and Deployment](./ci-cd-and-deployment.md).

@@ -1,0 +1,51 @@
+name: gastar-app-local
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gastar-postgres-local
+    environment:
+      POSTGRES_DB: gastar
+      POSTGRES_USER: gastar
+      POSTGRES_PASSWORD: gastar
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gastar -d gastar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ../.env.api.local.example
+    environment:
+      DATABASE_URL: postgresql://gastar:gastar@postgres:5432/gastar?schema=public
+    ports:
+      - "3000:3000"
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_APP_ENV: local
+        VITE_API_BASE_URL: http://localhost:3000/api/v1
+        VITE_GOOGLE_OAUTH_CLIENT_ID: local-google-client-id
+    depends_on:
+      - api
+    env_file:
+      - ../.env.web.local.example
+    ports:
+      - "4173:80"
+
+volumes:
+  postgres-data:
