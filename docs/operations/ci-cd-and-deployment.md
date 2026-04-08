@@ -18,12 +18,15 @@ Branches used:
 - `main`: Production branch mapped to the **production** environment.
 - `hotfix/*`: Urgent fixes from `main`.
 
+Regular work branches (`feature/*`, `fix/*`, `chore/*`, `docs/*`) are created from `develop`.
+
 Promotion steps:
-1. PR from `feature/*` to `develop`.
-2. Merge triggers auto-deploy to the `development` environment.
-3. Smoke test the `development` deployment.
-4. PR from `develop` to `main`.
-5. Merge triggers auto-deploy to the `production` environment.
+1. Create a `feature/*`, `fix/*`, `chore/*`, or `docs/*` branch from `develop`.
+2. PR from that work branch to `develop`.
+3. Merge triggers auto-deploy to the `development` environment.
+4. Smoke test the `development` deployment.
+5. PR from `develop` to `main`.
+6. Merge triggers auto-deploy to the `production` environment.
 
 For branch naming and commit conventions, see [Git and Collaboration](./git-and-collaboration.md).
 

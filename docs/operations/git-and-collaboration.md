@@ -63,6 +63,11 @@ Rules:
 - use a pull request to move code into a protected branch
 - keep feature work on short-lived branches
 
+Starting point rules:
+
+- create `feature/*`, `fix/*`, `docs/*`, and `chore/*` branches from `develop`
+- create `hotfix/*` branches from `main`
+
 The role of each protected branch and how code moves between them is defined in [docs/operations/ci-cd-and-deployment.md](./ci-cd-and-deployment.md).
 
 ## Commit Message Convention
@@ -142,6 +147,8 @@ Branch management should stay lightweight.
 Guidelines:
 
 - create branches from the correct starting branch for the intended work
+- regular work should branch from `develop`
+- urgent production hotfix work should branch from `main`
 - keep branches short-lived
 - avoid letting feature branches drift for long periods without rebasing or merging current integration state when needed
 - delete merged branches after they are no longer needed
