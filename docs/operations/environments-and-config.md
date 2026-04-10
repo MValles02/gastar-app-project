@@ -73,7 +73,7 @@ Current GitHub Actions inputs:
 
 - Development web build variables: `WEB_DEVELOPMENT_API_BASE_URL`, `WEB_DEVELOPMENT_GOOGLE_CLIENT_ID`
 - Production web build variables: `WEB_PRODUCTION_API_BASE_URL`, `WEB_PRODUCTION_GOOGLE_CLIENT_ID`
-- Development deployment secret: `DOKPLOY_DEVELOPMENT_WEBHOOK_URL`
-- Production deployment secret: `DOKPLOY_PRODUCTION_WEBHOOK_URL`
+- Development deployment secrets: `DOKPLOY_DEVELOPMENT_WEB_WEBHOOK_URL`, `DOKPLOY_DEVELOPMENT_API_WEBHOOK_URL`
+- Production deployment secrets: `DOKPLOY_PRODUCTION_WEB_WEBHOOK_URL`, `DOKPLOY_PRODUCTION_API_WEBHOOK_URL`
 
 For deployment pipeline and workflow rules mapping these environments, see [CI/CD and Deployment](./ci-cd-and-deployment.md).
