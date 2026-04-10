@@ -48,6 +48,7 @@ Configuration must support the correct allowed origins and redirect behavior for
 - Current application environment
 - Google OAuth client identifier appropriate for that environment
 - Repository examples: `.env.web.local.example`, `.env.web.development.example`, `.env.web.production.example`
+- Local runtime file: copy `.env.web.local.example` to `.env.web.local`; the `apps/web` dev server loads it from the repository root
 
 ### API Configuration
 - Server port and current application environment
@@ -57,6 +58,7 @@ Configuration must support the correct allowed origins and redirect behavior for
 - Access token and refresh token signing secrets
 - Cookie security behavior suitable for the environment
 - Repository examples: `.env.api.local.example`, `.env.api.development.example`, `.env.api.production.example`
+- Local runtime file: copy `.env.api.local.example` to `.env.api.local`; the API loads it from the repository root before parsing env vars
 
 ### Google OAuth Setup
 - Local client for local development

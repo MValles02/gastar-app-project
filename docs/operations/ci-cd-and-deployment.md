@@ -20,19 +20,29 @@ Branches used:
 
 Regular work branches (`feature/*`, `fix/*`, `chore/*`, `docs/*`) are created from `develop`.
 
+The repository validation workflow enforces this promotion path for protected branches:
+- pull requests into `develop` may come from normal work branches
+- pull requests into `main` must come from `develop` or `hotfix/*`
+
+Merge behavior for this flow:
+- pull requests from short-lived work branches into a protected branch should use squash merge
+- pull requests that synchronize `develop` and `main` (`develop` -> `main` promotions and `main` -> `develop` back-merges) must use merge commits so the protected branches keep shared ancestry
+
 Promotion steps:
 1. Create a `feature/*`, `fix/*`, `chore/*`, or `docs/*` branch from `develop`.
 2. PR from that work branch to `develop`.
-3. Merge triggers auto-deploy to the `development` environment.
+3. Squash merge triggers auto-deploy to the `development` environment.
 4. Smoke test the `development` deployment.
 5. PR from `develop` to `main`.
-6. Merge triggers auto-deploy to the `production` environment.
+6. Merge the promotion PR with a merge commit to trigger auto-deploy to the `production` environment.
 
 For branch naming and commit conventions, see [Git and Collaboration](./git-and-collaboration.md).
 
 ## CI Responsibilities
 
 Every PR into `develop` or `main` must pass the `validate` GitHub Actions workflow.
+
+For PRs targeting `main`, `validate` also rejects any source branch other than `develop` or `hotfix/*`.
 
 The workflow runs these root workspace commands:
 - `pnpm install --frozen-lockfile`
@@ -42,6 +52,10 @@ The workflow runs these root workspace commands:
 - `pnpm build`
 
 Protected branch rules require the `validate` check to pass before merge. PR workflows validate code only; they do not publish images or trigger deployments.
+
+Repository settings must allow both squash merges and merge commits.
+
+Protected branch rules for `develop` and `main` must not require linear history, because protected-branch synchronization relies on merge commits.
 
 ## Deployment Automation
 
@@ -86,5 +100,6 @@ Database migrations run automatically on every deploy to both development and pr
 
 For urgent production fixes:
 1. Branch `hotfix/*` from `main`.
-2. PR and merge into `main` (auto deploys to production).
-3. Back-merge the fix from `main` into `develop` to keep branches aligned.
+2. PR and merge the `hotfix/*` branch into `main` (auto deploys to production).
+3. Open a `main` -> `develop` back-merge PR.
+4. Merge the back-merge PR with a merge commit to keep the protected branches aligned.

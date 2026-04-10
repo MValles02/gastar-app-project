@@ -127,16 +127,17 @@ When applicable, a pull request should also mention:
 
 ## Merge Strategy
 
-The default merge strategy for pull requests into protected branches should be squash merge.
+Short-lived work branches should normally use squash merge into protected branches.
 
-This keeps protected branch history readable while allowing iterative local commits during development.
+Pull requests that synchronize the long-lived protected branches must use merge commits so `develop` and `main` keep shared ancestry.
 
 Guidelines:
 
-- use squash merge for `feature/*`, `fix/*`, `docs/*`, and `chore/*` pull requests
-- use squash merge for `develop` -> `main` promotion pull requests
-- keep the resulting squash commit message clean and intentional
-- avoid noisy "work in progress" wording in the final protected-branch history
+- use squash merge for `feature/*`, `fix/*`, `docs/*`, `chore/*`, and `hotfix/*` pull requests into a protected branch
+- use merge commits for `develop` -> `main` promotion pull requests
+- use merge commits for `main` -> `develop` back-merge pull requests
+- keep squash commit messages clean and intentional
+- keep protected-branch sync merge commits explicit and easy to trace
 
 The exact promotion path between `develop` and `main` is defined in [docs/operations/ci-cd-and-deployment.md](./ci-cd-and-deployment.md).
 

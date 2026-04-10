@@ -7,6 +7,8 @@
     "node": ">=18.19.0"
   },
   "scripts": {
+    "dev:api": "pnpm --filter @gastar/api dev",
+    "dev:web": "pnpm --filter @gastar/web dev",
     "lint": "pnpm --filter @gastar/shared lint && pnpm --filter @gastar/api lint && pnpm --filter @gastar/web lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
