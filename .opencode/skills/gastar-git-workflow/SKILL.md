@@ -94,7 +94,8 @@ Why the change exists.
 - Include a short summary of what changed and why.
 - Mention related issue, OpenSpec change, affected docs, and smoke-test notes when relevant.
 - Avoid bundling unrelated work into the same PR.
-- Default merge strategy is squash merge.
+- Use squash merge for PRs from short-lived branches.
+- Use merge commits for PRs that synchronize `develop` and `main`.
 
 ## Promotion Flow
 
@@ -103,10 +104,10 @@ Follow the documented promotion path:
 1. Work on `feature/*`, `fix/*`, `docs/*`, or `chore/*`.
 2. Open a PR into `develop`.
 3. Let CI validate the change.
-4. Merge to trigger deployment to the development environment.
+4. Squash merge to trigger deployment to the development environment.
 5. Smoke test in development.
 6. Open a PR from `develop` to `main`.
-7. Merge to trigger production deployment.
+7. Merge the promotion PR with a merge commit to trigger production deployment.
 
 ## Hotfix Flow
 
@@ -115,7 +116,7 @@ For urgent production fixes:
 1. Branch `hotfix/*` from `main`.
 2. Open and merge the PR into `main`.
 3. Allow production deployment to run.
-4. Back-merge the fix from `main` into `develop`.
+4. Open `main` -> `develop` and merge that back-merge PR with a merge commit.
 
 ## Deployment Awareness
 
@@ -124,6 +125,7 @@ For urgent production fixes:
 - Pushes merged into `main` deploy to production.
 - Database migrations run automatically on deploy via `prisma migrate deploy`.
 - Development and production are isolated environments and must not share secrets, OAuth config, or data.
+- Protected-branch synchronization requires merge commits, so `develop` and `main` must not require linear history.
 
 ## Operational Behavior For The Assistant
 
