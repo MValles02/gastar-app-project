@@ -12,6 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Enforce promotion flow to main
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ "$BASE_REF" = "main" ]; then
+            case "$HEAD_REF" in
+              develop|hotfix/*) ;;
+              *)
+                echo "Pull requests into main must come from develop or hotfix/* branches." >&2
+                exit 1
+                ;;
+            esac
+          fi
+
       - name: Check out repository
         uses: actions/checkout@v4
 
