@@ -11,8 +11,9 @@
 
 1. Install Node.js `18.19+`.
 2. Install dependencies with `pnpm install`.
-3. Copy the relevant `.env.*.example` files if you need local overrides.
+3. Copy `.env.api.local.example` to `.env.api.local` and `.env.web.local.example` to `.env.web.local` for local app startup.
 4. Start PostgreSQL with `pnpm db:up` or boot the full local stack with `docker compose -f infra/docker-compose.yml up --build`.
+5. Run the apps with `pnpm dev:api` and `pnpm dev:web` when working outside Docker.
 
 ## Required checks
 

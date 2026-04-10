@@ -1,5 +1,16 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { config as loadEnv } from "dotenv";
 import { appEnvironmentSchema } from "@gastar/shared";
 import { z } from "zod";
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+const localEnvFile = path.resolve(currentDir, "../../../.env.api.local");
+
+if (existsSync(localEnvFile)) {
+  loadEnv({ path: localEnvFile });
+}
 
 const envSchema = z.object({
   NODE_ENV: appEnvironmentSchema.default("local"),

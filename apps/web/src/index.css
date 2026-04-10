@@ -1,33 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 44 100% 98%;
-  --foreground: 24 10% 18%;
-  --card: 0 0% 100%;
-  --card-foreground: 24 10% 18%;
-  --primary: 37 92% 50%;
-  --primary-foreground: 24 10% 18%;
-  --secondary: 38 60% 94%;
-  --secondary-foreground: 24 10% 18%;
-  --muted: 40 30% 95%;
-  --muted-foreground: 24 8% 42%;
-  --border: 38 35% 85%;
-  --radius: 1rem;
-  font-family: Geist, system-ui, sans-serif;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
+  --background: 0.98 0.01 53.23;
+  --foreground: 0.24 0.02 28;
+  --card: 0.99 0.006 53.23;
+  --card-foreground: 0.24 0.02 28;
+  --primary: 0.746 0.16 53.23;
+  --primary-foreground: 0.24 0.02 28;
+  --secondary: 0.95 0.02 53.23;
+  --secondary-foreground: 0.28 0.03 30;
+  --muted: 0.95 0.015 53.23;
+  --muted-foreground: 0.5 0.03 35;
+  --border: 0.9 0.015 53.23;
+  --radius: 0.625rem;
+  font-family: "Geist", system-ui, sans-serif;
+  color: oklch(var(--foreground));
+  background: oklch(var(--background));
 }
 
 * {
-  border-color: hsl(var(--border));
+  border-color: oklch(var(--border));
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  background: hsl(var(--background));
+  background: oklch(var(--background));
 }
 
 #root {

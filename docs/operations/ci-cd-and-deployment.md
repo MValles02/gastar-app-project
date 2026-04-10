@@ -20,6 +20,10 @@ Branches used:
 
 Regular work branches (`feature/*`, `fix/*`, `chore/*`, `docs/*`) are created from `develop`.
 
+The repository validation workflow enforces this promotion path for protected branches:
+- pull requests into `develop` may come from normal work branches
+- pull requests into `main` must come from `develop` or `hotfix/*`
+
 Promotion steps:
 1. Create a `feature/*`, `fix/*`, `chore/*`, or `docs/*` branch from `develop`.
 2. PR from that work branch to `develop`.
@@ -33,6 +37,8 @@ For branch naming and commit conventions, see [Git and Collaboration](./git-and-
 ## CI Responsibilities
 
 Every PR into `develop` or `main` must pass the `validate` GitHub Actions workflow.
+
+For PRs targeting `main`, `validate` also rejects any source branch other than `develop` or `hotfix/*`.
 
 The workflow runs these root workspace commands:
 - `pnpm install --frozen-lockfile`

@@ -56,12 +56,16 @@ This repository now includes the documented monorepo bootstrap for `apps/web`, `
 ## Workspace Commands
 
 - `pnpm install`
+- `pnpm dev:api`
+- `pnpm dev:web`
 - `pnpm lint`
 - `pnpm format:check`
 - `pnpm typecheck`
 - `pnpm build`
 - `pnpm db:up`
 - `pnpm db:down`
+
+Local app startup expects root-level `.env.api.local` and `.env.web.local` files copied from the corresponding `.example` templates.
 
 ## Product Direction
 
