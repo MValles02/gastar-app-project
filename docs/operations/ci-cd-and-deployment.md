@@ -67,7 +67,7 @@ Post-merge automation runs on pushes to `develop` and `main`:
    - `ghcr.io/<owner>/<repo>-web:development|production`
    - `ghcr.io/<owner>/<repo>-api:<sha>`
    - `ghcr.io/<owner>/<repo>-api:development|production`
-4. The workflow triggers the matching Dokploy webhook after the image publish succeeds.
+4. The workflow triggers the matching Dokploy `web` and `api` application webhooks after the image publish succeeds.
 
 Dokploy application services are configured to deploy from these prebuilt Docker images rather than building the source code natively.
 
@@ -82,9 +82,11 @@ GitHub Actions uses environment-specific repository configuration:
   - `WEB_PRODUCTION_API_BASE_URL`
   - `WEB_PRODUCTION_GOOGLE_CLIENT_ID`
 - Development secrets:
-  - `DOKPLOY_DEVELOPMENT_WEBHOOK_URL`
+  - `DOKPLOY_DEVELOPMENT_WEB_WEBHOOK_URL`
+  - `DOKPLOY_DEVELOPMENT_API_WEBHOOK_URL`
 - Production secrets:
-  - `DOKPLOY_PRODUCTION_WEBHOOK_URL`
+  - `DOKPLOY_PRODUCTION_WEB_WEBHOOK_URL`
+  - `DOKPLOY_PRODUCTION_API_WEBHOOK_URL`
 
 Repository Actions workflow permissions must allow write access so the deploy workflows can publish GHCR packages with `GITHUB_TOKEN`.
 

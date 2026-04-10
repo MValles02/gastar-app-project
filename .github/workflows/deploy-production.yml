@@ -21,11 +21,13 @@ jobs:
         env:
           WEB_API_BASE_URL: ${{ vars.WEB_PRODUCTION_API_BASE_URL }}
           WEB_GOOGLE_CLIENT_ID: ${{ vars.WEB_PRODUCTION_GOOGLE_CLIENT_ID }}
-          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEBHOOK_URL }}
+          DOKPLOY_WEBHOOK_WEB_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEB_WEBHOOK_URL }}
+          DOKPLOY_WEBHOOK_API_URL: ${{ secrets.DOKPLOY_PRODUCTION_API_WEBHOOK_URL }}
         run: |
           test -n "$WEB_API_BASE_URL" || { echo "Missing WEB_PRODUCTION_API_BASE_URL" >&2; exit 1; }
           test -n "$WEB_GOOGLE_CLIENT_ID" || { echo "Missing WEB_PRODUCTION_GOOGLE_CLIENT_ID" >&2; exit 1; }
-          test -n "$DOKPLOY_WEBHOOK_URL" || { echo "Missing DOKPLOY_PRODUCTION_WEBHOOK_URL" >&2; exit 1; }
+          test -n "$DOKPLOY_WEBHOOK_WEB_URL" || { echo "Missing DOKPLOY_PRODUCTION_WEB_WEBHOOK_URL" >&2; exit 1; }
+          test -n "$DOKPLOY_WEBHOOK_API_URL" || { echo "Missing DOKPLOY_PRODUCTION_API_WEBHOOK_URL" >&2; exit 1; }
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -71,7 +73,12 @@ jobs:
             ${{ steps.meta.outputs.api_sha }}
             ${{ steps.meta.outputs.api_env }}
 
-      - name: Trigger Dokploy deployment
+      - name: Trigger Dokploy web deployment
         env:
-          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEBHOOK_URL }}
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEB_WEBHOOK_URL }}
+        run: curl --fail --silent --show-error -X POST "$DOKPLOY_WEBHOOK_URL"
+
+      - name: Trigger Dokploy api deployment
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_API_WEBHOOK_URL }}
         run: curl --fail --silent --show-error -X POST "$DOKPLOY_WEBHOOK_URL"
