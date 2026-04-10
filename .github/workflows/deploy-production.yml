@@ -1,0 +1,77 @@
+name: deploy-production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-and-deploy:
+    name: publish-and-deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify deployment inputs
+        env:
+          WEB_API_BASE_URL: ${{ vars.WEB_PRODUCTION_API_BASE_URL }}
+          WEB_GOOGLE_CLIENT_ID: ${{ vars.WEB_PRODUCTION_GOOGLE_CLIENT_ID }}
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEBHOOK_URL }}
+        run: |
+          test -n "$WEB_API_BASE_URL" || { echo "Missing WEB_PRODUCTION_API_BASE_URL" >&2; exit 1; }
+          test -n "$WEB_GOOGLE_CLIENT_ID" || { echo "Missing WEB_PRODUCTION_GOOGLE_CLIENT_ID" >&2; exit 1; }
+          test -n "$DOKPLOY_WEBHOOK_URL" || { echo "Missing DOKPLOY_PRODUCTION_WEBHOOK_URL" >&2; exit 1; }
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare image tags
+        id: meta
+        run: |
+          repo_owner="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
+          repo_name="$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')"
+          echo "web_sha=ghcr.io/${repo_owner}/${repo_name}-web:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "web_env=ghcr.io/${repo_owner}/${repo_name}-web:production" >> "$GITHUB_OUTPUT"
+          echo "api_sha=ghcr.io/${repo_owner}/${repo_name}-api:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "api_env=ghcr.io/${repo_owner}/${repo_name}-api:production" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push web image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          push: true
+          build-args: |
+            VITE_APP_ENV=production
+            VITE_API_BASE_URL=${{ vars.WEB_PRODUCTION_API_BASE_URL }}
+            VITE_GOOGLE_OAUTH_CLIENT_ID=${{ vars.WEB_PRODUCTION_GOOGLE_CLIENT_ID }}
+          tags: |
+            ${{ steps.meta.outputs.web_sha }}
+            ${{ steps.meta.outputs.web_env }}
+
+      - name: Build and push api image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.api_sha }}
+            ${{ steps.meta.outputs.api_env }}
+
+      - name: Trigger Dokploy deployment
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEBHOOK_URL }}
+        run: curl --fail --silent --show-error -X POST "$DOKPLOY_WEBHOOK_URL"

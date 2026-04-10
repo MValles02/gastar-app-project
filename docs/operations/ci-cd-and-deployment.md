@@ -32,28 +32,54 @@ For branch naming and commit conventions, see [Git and Collaboration](./git-and-
 
 ## CI Responsibilities
 
-Every PR into `develop` or `main` must pass CI checks:
-- Install dependencies
-- Linting and formatting
-- Typechecking
-- Build the affected applications (web/api)
+Every PR into `develop` or `main` must pass the `validate` GitHub Actions workflow.
 
-CI should fail fast on validation errors and block merging. PR workflows validate code only; they do not publish images or trigger deployments.
+The workflow runs these root workspace commands:
+- `pnpm install --frozen-lockfile`
+- `pnpm lint`
+- `pnpm format:check`
+- `pnpm typecheck`
+- `pnpm build`
+
+Protected branch rules require the `validate` check to pass before merge. PR workflows validate code only; they do not publish images or trigger deployments.
 
 ## Deployment Automation
 
 Post-merge automation runs on pushes to `develop` and `main`:
-1. Rebuild the deployable container images (`web` and `api`).
-2. Publish images to the container registry (e.g., `ghcr.io`).
-   - Image tags include immutable commit SHAs and stable environment tags (`development` or `production`).
-3. Trigger Dokploy deployment (via API or webhook) for the matching environment.
+1. `deploy-development` runs on `develop` and `deploy-production` runs on `main`.
+2. Each workflow rebuilds the deployable `web` and `api` container images.
+3. Images are published to GHCR using deterministic names:
+   - `ghcr.io/<owner>/<repo>-web:<sha>`
+   - `ghcr.io/<owner>/<repo>-web:development|production`
+   - `ghcr.io/<owner>/<repo>-api:<sha>`
+   - `ghcr.io/<owner>/<repo>-api:development|production`
+4. The workflow triggers the matching Dokploy webhook after the image publish succeeds.
 
 Dokploy application services are configured to deploy from these prebuilt Docker images rather than building the source code natively.
+
+### Deployment Inputs
+
+GitHub Actions uses environment-specific repository configuration:
+
+- Development variables:
+  - `WEB_DEVELOPMENT_API_BASE_URL`
+  - `WEB_DEVELOPMENT_GOOGLE_CLIENT_ID`
+- Production variables:
+  - `WEB_PRODUCTION_API_BASE_URL`
+  - `WEB_PRODUCTION_GOOGLE_CLIENT_ID`
+- Development secrets:
+  - `DOKPLOY_DEVELOPMENT_WEBHOOK_URL`
+- Production secrets:
+  - `DOKPLOY_PRODUCTION_WEBHOOK_URL`
+
+Repository Actions workflow permissions must allow write access so the deploy workflows can publish GHCR packages with `GITHUB_TOKEN`.
 
 ## Database Migrations
 
 Database migrations run automatically on every deploy to both development and production.
 - `prisma migrate deploy` executes before the API begins serving traffic.
+- The API container entrypoint is `apps/api/scripts/start-production.sh`, which runs the migration command before `node dist/index.js`.
+- Prisma configuration lives in `apps/api/prisma.config.ts` with tracked migrations committed under `apps/api/prisma/migrations/`.
 - No deploy relies on manual schema changes.
 
 ## Hotfix Flow
