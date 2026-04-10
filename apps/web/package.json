@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode web.local",
     "lint": "eslint \"src/**/*.{ts,tsx}\" vite.config.ts tailwind.config.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "vite build"
